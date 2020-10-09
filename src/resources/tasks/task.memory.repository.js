@@ -3,13 +3,13 @@ const db = require('../../common/db.temp');
 const TABLE_NAME = 'Tasks';
 
 const getAll = async id => {
-  const tasks = db[TABLE_NAME].find(t => t.boardId === id);
+  const tasks = await db[TABLE_NAME].filter(t => t.boardId === id);
   return tasks;
 };
 
 const getById = async (bid, tid) => {
   const task = await db[TABLE_NAME].find(
-    t => t.boardId === bid && t.taskId === tid
+    t => t.boardId === bid && t.id === tid
   );
   if (!task) {
     return `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`;
@@ -25,7 +25,7 @@ const create = async (id, data) => {
 
 const update = async (bid, tid, data) => {
   const task = await db[TABLE_NAME].find(
-    t => t.boardId === bid && t.taskId === tid
+    t => t.boardId === bid && t.id === tid
   );
   if (!task) {
     return `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`;
@@ -44,7 +44,7 @@ const update = async (bid, tid, data) => {
 
 const remove = async (bid, tid) => {
   const indexDeletedTask = await db[TABLE_NAME].findIndex(
-    t => t.boardId === bid && t.taskId === tid
+    t => t.boardId === bid && t.id === tid
   );
   if (!indexDeletedTask) {
     return `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`;

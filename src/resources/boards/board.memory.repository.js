@@ -36,9 +36,10 @@ const remove = async id => {
   if (!indexDeletedBoard) {
     return `Cannot find board with ${id} id.`;
   }
-  db.Tasks.filter(t => t.boardId === id).forEach((t, i) =>
-    db.Tasks.splice(i, 1)
-  );
+  // db.Tasks.filter(t => t.boardId === id).forEach((t, i) =>
+  //   db.Tasks.splice(i, 1)
+  // );
+  db.boardsGarbageCollector(id);
   db[TABLE_NAME].splice(indexDeletedBoard, 1);
   return `Board with id:${id} successfully deleted.`;
 };

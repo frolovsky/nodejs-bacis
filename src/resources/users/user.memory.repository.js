@@ -44,6 +44,7 @@ const remove = async id => {
   if (!indexDeletedUser) {
     return `Cannot find user with ${id} id.`;
   }
+  db.tasksGarbageCollector(id);
   db[TABLE_NAME].splice(indexDeletedUser, 1);
   return `User with id:${id} successfully deleted.`;
 };
