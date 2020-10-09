@@ -14,6 +14,22 @@ const db = {
 
     db.Boards.push(new Board());
     db.Tasks.push(new Task());
+  },
+  boardsGarbageCollector(deletedBoardId) {
+    this.Tasks.forEach((t, i) => {
+      if (t.boardId === deletedBoardId) {
+        this.Tasks.splice(i, 1);
+        console.log('boardsGargage');
+      }
+    });
+  },
+  tasksGarbageCollector(deletedUserId) {
+    this.Tasks.forEach(t => {
+      if (t.userId === deletedUserId) {
+        t.userId = null;
+        console.log('tasksGargage');
+      }
+    });
   }
 };
 
