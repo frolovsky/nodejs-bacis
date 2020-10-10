@@ -9,7 +9,10 @@ const getAll = async () => {
 const getById = async id => {
   const board = await db[TABLE_NAME].find(b => b.id === id);
   if (!board) {
-    return `Cannot find board with ${id} id.`;
+    return {
+      message: `Cannot find board with ${id} id.`,
+      error: 'Not found'
+    };
   }
   return board;
 };
@@ -33,12 +36,12 @@ const update = async (id, data) => {
 
 const remove = async id => {
   const indexDeletedBoard = db[TABLE_NAME].findIndex(board => board.id === id);
-  if (!indexDeletedBoard) {
-    return `Cannot find board with ${id} id.`;
+  if (!indexDeletedBoard && indexDeletedBoard !== 0) {
+    return {
+      message: `Cannot find board with ${id} id.`,
+      error: 'Not found'
+    };
   }
-  // db.Tasks.filter(t => t.boardId === id).forEach((t, i) =>
-  //   db.Tasks.splice(i, 1)
-  // );
   db.boardsGarbageCollector(id);
   db[TABLE_NAME].splice(indexDeletedBoard, 1);
   return `Board with id:${id} successfully deleted.`;

@@ -8,6 +8,9 @@ router.route('/').get(async (req, res) => {
 
 router.route('/:id').get(async (req, res) => {
   const task = await tasksService.getById(req.params.boardId, req.params.id);
+  if (task.error) {
+    return res.sendStatus(404).end();
+  }
   res.json(task);
 });
 
@@ -27,7 +30,10 @@ router.route('/:id').put(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
   const result = await tasksService.remove(req.params.boardId, req.params.id);
-  res.json(result);
+  if (result.error) {
+    res.sendStatus(404).end();
+  }
+  res.send(result);
 });
 
 module.exports = router;

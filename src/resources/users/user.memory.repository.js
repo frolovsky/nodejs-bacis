@@ -41,7 +41,7 @@ const update = async (id, data) => {
 
 const remove = async id => {
   const indexDeletedUser = db[TABLE_NAME].findIndex(u => u.id === id);
-  if (!indexDeletedUser) {
+  if (!indexDeletedUser && indexDeletedUser !== 0) {
     return `Cannot find user with ${id} id.`;
   }
   db.tasksGarbageCollector(id);

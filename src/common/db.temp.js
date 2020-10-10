@@ -19,7 +19,6 @@ const db = {
     this.Tasks.forEach((t, i) => {
       if (t.boardId === deletedBoardId) {
         this.Tasks.splice(i, 1);
-        console.log('boardsGargage');
       }
     });
   },
@@ -27,13 +26,11 @@ const db = {
     this.Tasks.forEach(t => {
       if (t.userId === deletedUserId) {
         t.userId = null;
-        console.log('tasksGargage');
       }
     });
   }
 };
 
 db.init();
-console.log('db-init');
 
 module.exports = db;
