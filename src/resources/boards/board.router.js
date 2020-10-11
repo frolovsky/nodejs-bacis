@@ -7,11 +7,12 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  const board = await boardsService.getById(req.params.id);
-  if (board.error) {
-    return res.sendStatus(404).end();
+  try {
+    const board = await boardsService.getById(req.params.id);
+    res.json(board);
+  } catch (e) {
+    res.status(404).send(e);
   }
-  res.json(board);
 });
 
 router.route('/').post(async (req, res) => {
@@ -25,8 +26,12 @@ router.route('/:id').put(async (req, res) => {
 });
 
 router.route('/:id').delete(async (req, res) => {
-  const result = await boardsService.remove(req.params.id);
-  res.json(result);
+  try {
+    const result = await boardsService.remove(req.params.id);
+    res.json(result);
+  } catch (e) {
+    res.status(404).send(e);
+  }
 });
 
 module.exports = router;

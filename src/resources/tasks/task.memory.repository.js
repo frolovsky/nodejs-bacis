@@ -4,6 +4,9 @@ const TABLE_NAME = 'Tasks';
 
 const getAll = async id => {
   const tasks = await db[TABLE_NAME].filter(t => t.boardId === id);
+  if (!tasks || tasks.length === 0) {
+    throw new Error('Cannot find task');
+  }
   return tasks;
 };
 
@@ -12,10 +15,9 @@ const getById = async (bid, tid) => {
     t => t.boardId === bid && t.id === tid
   );
   if (!task) {
-    return {
-      message: `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`,
-      error: 'Not found'
-    };
+    throw new Error(
+      `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`
+    );
   }
   return task;
 };
@@ -31,7 +33,9 @@ const update = async (bid, tid, data) => {
     t => t.boardId === bid && t.id === tid
   );
   if (!task) {
-    return `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`;
+    throw new Error(
+      `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`
+    );
   }
   task.id = data.id || task.id;
   task.title = data.title || task.title;
@@ -40,9 +44,7 @@ const update = async (bid, tid, data) => {
   task.userId = data.userId || task.userId;
   task.boardId = data.boardId || task.boardId;
   task.columnId = data.columnId || task.columnId;
-  return {
-    result: 'Task successfully updated'
-  };
+  return task;
 };
 
 const remove = async (bid, tid) => {
@@ -50,10 +52,9 @@ const remove = async (bid, tid) => {
     t => t.boardId === bid && t.id === tid
   );
   if (!indexDeletedTask && indexDeletedTask !== 0) {
-    return {
-      message: `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`,
-      error: 'Not found'
-    };
+    throw new Error(
+      `Cannot find task with boardId: ${bid}, taskId: ${tid} id.`
+    );
   }
   db[TABLE_NAME].splice(indexDeletedTask, 1);
   return `Task with boardId: ${bid}, taskId: ${tid} successfully deleted.`;

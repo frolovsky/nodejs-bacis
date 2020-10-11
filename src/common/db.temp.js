@@ -19,6 +19,7 @@ const db = {
     this.Tasks.forEach((t, i) => {
       if (t.boardId === deletedBoardId) {
         this.Tasks.splice(i, 1);
+        this.boardsGarbageCollector(deletedBoardId);
       }
     });
   },
@@ -30,7 +31,5 @@ const db = {
     });
   }
 };
-
-db.init();
 
 module.exports = db;

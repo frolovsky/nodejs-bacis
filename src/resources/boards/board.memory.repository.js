@@ -9,10 +9,7 @@ const getAll = async () => {
 const getById = async id => {
   const board = await db[TABLE_NAME].find(b => b.id === id);
   if (!board) {
-    return {
-      message: `Cannot find board with ${id} id.`,
-      error: 'Not found'
-    };
+    throw new Error(`Cannot find board with ${id} id`);
   }
   return board;
 };
@@ -26,7 +23,7 @@ const create = async data => {
 const update = async (id, data) => {
   const board = await db[TABLE_NAME].find(b => b.id === id);
   if (!board) {
-    return `Cannot find board with ${id} id.`;
+    throw new Error(`Cannot find board with ${id} id`);
   }
   board.id = data.id || board.id;
   board.title = data.title || board.title;
@@ -37,13 +34,10 @@ const update = async (id, data) => {
 const remove = async id => {
   const indexDeletedBoard = db[TABLE_NAME].findIndex(board => board.id === id);
   if (!indexDeletedBoard && indexDeletedBoard !== 0) {
-    return {
-      message: `Cannot find board with ${id} id.`,
-      error: 'Not found'
-    };
+    throw new Error(`Cannot find board with ${id} id`);
   }
-  db.boardsGarbageCollector(id);
-  db[TABLE_NAME].splice(indexDeletedBoard, 1);
+  await db[TABLE_NAME].splice(indexDeletedBoard, 1);
+  await db.boardsGarbageCollector(id);
   return `Board with id:${id} successfully deleted.`;
 };
 

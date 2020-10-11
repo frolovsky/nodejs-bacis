@@ -9,14 +9,14 @@ const getAll = async () => {
 const getById = async id => {
   const user = await db[TABLE_NAME].find(u => u.id === id);
   if (!user) {
-    return false;
+    throw new Error(`Cannot find user with ${id} id`);
   }
   return User.toResponse(user);
 };
 
 const create = async data => {
   if (!validateLogin(data.login)) {
-    return `User with ${data.login} already exist.`;
+    throw new Error(`User with ${data.login} already exist.`);
   }
   const user = new User({ ...data });
   await db[TABLE_NAME].push(user);
@@ -26,10 +26,10 @@ const create = async data => {
 const update = async (id, data) => {
   const user = await db[TABLE_NAME].find(u => u.id === id);
   if (!user) {
-    return `Cannot find user with ${id} id.`;
+    throw new Error(`Cannot find user with ${id} id`);
   }
   if (data.login && data.login !== user.login && !validateLogin(data.login)) {
-    return `User with ${data.login} already exist.`;
+    throw new Error(`User with ${data.login} already exist.`);
   }
   user.id = data.id || user.id;
   user.name = data.name || user.name;
@@ -42,7 +42,7 @@ const update = async (id, data) => {
 const remove = async id => {
   const indexDeletedUser = db[TABLE_NAME].findIndex(u => u.id === id);
   if (!indexDeletedUser && indexDeletedUser !== 0) {
-    return `Cannot find user with ${id} id.`;
+    throw new Error(`Cannot find user with ${id} id`);
   }
   db.tasksGarbageCollector(id);
   db[TABLE_NAME].splice(indexDeletedUser, 1);
