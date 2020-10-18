@@ -6,6 +6,11 @@ const db = require('./common/db.temp');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const logger = require('./middleware/logger');
+const {
+  notFoundHandler,
+  anyErrorsHandler
+} = require('./middleware/error/error.handlers');
 
 db.init();
 
@@ -23,9 +28,19 @@ app.use('/', (req, res, next) => {
   }
   next();
 });
+app.use(logger);
 
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/boards/:boardId/tasks', taskRouter);
+
+app.use(notFoundHandler, anyErrorsHandler);
+process.on('uncaughtException', err => {
+  throw new Error(err.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  throw new Error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 module.exports = app;
