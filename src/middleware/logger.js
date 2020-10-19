@@ -1,15 +1,23 @@
+const { createLogger, format, transports } = require('winston');
 const {
   removePasswordFromResponse
 } = require('../validators/response.validator');
-module.exports = (req, res, next) => {
-  const { method, query } = req;
-  const body = removePasswordFromResponse(req.body);
-  console.log(
-    `Incoming request: METHOD - ${method} 
-    >>> url: ${req.protocol}://${req.headers.host}${req._parsedUrl.pathname} 
-    >>> query: ${JSON.stringify(query)} 
-    >>> body: ${JSON.stringify(body)}
-    >>> Full URL with query: ${req.protocol}://${req.headers.host}${req.url}`
+
+const logger = createLogger({
+  level: 'silly',
+  format: format.combine(format.colorize(), format.cli()),
+  transports: [new transports.Console()]
+});
+
+const requsetLogger = (req, res, next) => {
+  logger.info(
+    JSON.stringify({
+      url: req.url,
+      params: req.params,
+      body: removePasswordFromResponse(req.body)
+    })
   );
   next();
 };
+
+module.exports = { logger, requsetLogger };
