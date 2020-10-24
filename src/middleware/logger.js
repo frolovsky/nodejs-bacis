@@ -1,7 +1,5 @@
 const { createLogger, format, transports } = require('winston');
-const {
-  removePasswordFromResponse
-} = require('../validators/response.validator');
+const { maskPasswordFromRequest } = require('../helpers/response.helper');
 
 const logger = createLogger({
   level: 'silly',
@@ -13,8 +11,9 @@ const requsetLogger = (req, res, next) => {
   logger.info(
     JSON.stringify({
       url: req.url,
+      query: req.query,
       params: req.params,
-      body: removePasswordFromResponse(req.body)
+      body: maskPasswordFromRequest(req.body)
     })
   );
   next();
