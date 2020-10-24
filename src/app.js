@@ -2,15 +2,12 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
 const YAML = require('yamljs');
-const db = require('./common/db.temp');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 const { requsetLogger, logger } = require('./middleware/logger');
 const { errorHandler } = require('./middleware/error.handlers');
 const exit = process.exit;
-
-db.init();
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -22,8 +19,13 @@ process
     logger.error(err, err.stack);
     exit(1);
   })
-  .on('unhandledRejection', () => {
-    throw new Error('Unhandled Rejection');
+  .on('unhandledRejection', (reason, promise) => {
+    logger.error(
+      `unhandledRejection. Reason: ${
+        reason.message
+      }, in promise: ${JSON.stringify(promise)}`
+    );
+    exit(1);
   });
 
 app.use(express.json());
