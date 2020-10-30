@@ -5,8 +5,8 @@ const { AuthError, NotFoundError } = require('../../common/error.classes');
 const { JWT_SECRET_KEY } = require('../../common/config');
 
 const login = async (userLogin, password) => {
-  const user = await User.findOne({ userLogin });
-
+  const user = await User.findOne({ login: userLogin });
+  console.log(user);
   if (!user) {
     throw new NotFoundError(`User with login: ${userLogin} doesn't exist.`);
   }

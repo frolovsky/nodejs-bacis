@@ -14,8 +14,8 @@ const UserSchema = new mongoose.Schema(
   },
   { versionKey: false }
 );
-
-UserSchema.pre('save', next => {
+// eslint-disable-next-line func-names, space-before-function-paren
+UserSchema.pre('save', function(next) {
   const user = this;
 
   bcrypt.hash(user.password, 10, (err, encrypted) => {
