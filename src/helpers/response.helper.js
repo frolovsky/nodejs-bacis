@@ -1,8 +1,9 @@
 const maskPasswordFromRequest = body => {
+  const responeBody = Object.assign({}, body);
   if (Object.prototype.hasOwnProperty.call(body, 'password')) {
-    body.password = '*'.repeat(String(body.password).length);
+    responeBody.password = '*'.repeat(String(responeBody.password).length);
   }
-  return body;
+  return responeBody;
 };
 
 module.exports = { maskPasswordFromRequest };

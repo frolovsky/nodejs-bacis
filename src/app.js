@@ -7,6 +7,7 @@ const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 const { requsetLogger, logger } = require('./middleware/logger');
 const { errorHandler } = require('./middleware/error.handlers');
+const Auth = require('./middleware/auth');
 const exit = process.exit;
 
 const app = express();
@@ -42,9 +43,10 @@ app.use('/', (req, res, next) => {
 
 app.use(requsetLogger);
 
-app.use('/users', userRouter);
-app.use('/boards', boardRouter);
-app.use('/boards/:boardId/tasks', taskRouter);
+app.use('/', Auth.AuthRouter);
+app.use('/users', Auth.AuthProtect.checkJWT, userRouter);
+app.use('/boards', Auth.AuthProtect.checkJWT, boardRouter);
+app.use('/boards/:boardId/tasks', Auth.AuthProtect.checkJWT, taskRouter);
 
 app.use(errorHandler);
 
