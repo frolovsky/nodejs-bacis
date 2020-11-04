@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const mongoose = require('mongoose');
 
@@ -13,6 +14,18 @@ const UserSchema = new mongoose.Schema(
   },
   { versionKey: false }
 );
+// eslint-disable-next-line func-names, space-before-function-paren
+UserSchema.pre('save', function(next) {
+  const user = this;
+
+  bcrypt.hash(user.password, 10, (err, encrypted) => {
+    if (err) {
+      throw new Error(err);
+    }
+    user.password = encrypted;
+    next();
+  });
+});
 
 const toResponse = user => {
   const { _id, name, login } = user;
